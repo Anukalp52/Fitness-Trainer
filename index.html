@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Fitness Trainer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Instrument+Serif:ital@0;1&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="hero">
+        <div class="hero-copy">
+          <button id="themeToggle" class="theme-toggle" type="button" aria-label="Toggle theme">
+            Light mode
+          </button>
+          <div class="hero-badge">Live form coach</div>
+          <p class="eyebrow">AI Fitness Trainer</p>
+          <h1>Real-time posture coaching that feels built for game day.</h1>
+          <p class="hero-text">
+            Pick an exercise, turn on your camera, and get instant form guidance
+            powered by browser-based pose detection with crisp, instant feedback.
+          </p>
+        </div>
+
+        <div class="hero-panel">
+          <div class="metric-card">
+            <span class="metric-label">Session State</span>
+            <strong id="sessionState">Idle</strong>
+          </div>
+          <div class="metric-card">
+            <span class="metric-label">Detected Exercise</span>
+            <strong id="activeExercise">Squat</strong>
+          </div>
+        </div>
+      </header>
+
+      <main class="dashboard">
+        <section class="camera-section panel">
+          <div class="panel-header">
+            <div>
+              <p class="section-kicker">Live Coach</p>
+              <h2>Camera + Pose Overlay</h2>
+            </div>
+
+            <div class="controls">
+              <label class="select-wrap" for="exerciseSelect">
+                <span>Exercise</span>
+                <select id="exerciseSelect">
+                  <option value="squat">Squat</option>
+                  <option value="pushup">Push-up</option>
+                  <option value="plank">Plank</option>
+                </select>
+              </label>
+
+              <button id="startButton" class="primary-btn">Start Camera</button>
+            </div>
+          </div>
+
+          <div class="video-stage">
+            <video id="video" playsinline></video>
+            <canvas id="outputCanvas"></canvas>
+            <div class="video-hint" id="videoHint">
+              Allow camera access and stand where your full body is visible.
+            </div>
+          </div>
+        </section>
+
+        <section class="stats-section">
+          <div class="panel summary-panel">
+            <div class="summary-grid">
+              <article>
+                <span>Reps</span>
+                <strong id="repCount">0</strong>
+              </article>
+              <article>
+                <span>Form Score</span>
+                <strong id="formScore">0%</strong>
+              </article>
+              <article>
+                <span>Hold Time</span>
+                <strong id="holdTime">0.0s</strong>
+              </article>
+            </div>
+          </div>
+
+          <div class="panel feedback-panel">
+            <p class="section-kicker">Feedback</p>
+            <h2 id="feedbackTitle">Ready to begin</h2>
+            <p id="feedbackText">
+              Choose an exercise and start the camera to receive posture cues.
+            </p>
+            <ul class="tips-list" id="tipsList">
+              <li>Keep your whole body inside the frame.</li>
+              <li>Wear fitted clothing if possible for cleaner landmark tracking.</li>
+              <li>Angle the camera from the side for push-ups and planks.</li>
+            </ul>
+          </div>
+
+          <div class="panel guide-panel">
+            <p class="section-kicker">How It Works</p>
+            <h2>Movement intelligence in the browser</h2>
+            <p>
+              This prototype uses MediaPipe Pose landmarks and exercise-specific
+              heuristics to estimate alignment, depth, and stability in real time.
+            </p>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script>
+      (() => {
+        const root = document.body;
+        const toggle = document.getElementById("themeToggle");
+        const saved = localStorage.getItem("fitness-theme") || "dark";
+
+        const applyTheme = (theme) => {
+          root.dataset.theme = theme;
+          toggle.textContent = theme === "dark" ? "Light mode" : "Dark mode";
+          toggle.setAttribute("aria-label", `Switch to ${theme === "dark" ? "light" : "dark"} theme`);
+        };
+
+        applyTheme(saved);
+
+        toggle.addEventListener("click", () => {
+          const next = root.dataset.theme === "dark" ? "light" : "dark";
+          localStorage.setItem("fitness-theme", next);
+          applyTheme(next);
+        });
+      })();
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js"></script>
+    <script src="./app.js"></script>
+  </body>
+</html>
